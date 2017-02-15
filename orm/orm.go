@@ -4,15 +4,6 @@ import "database/sql"
 
 type ORM interface {
 	DB() *sql.DB
-	Get(i interface{}, keys ...interface{}) (interface{}, error)
-	Select(i interface{}, query string, args ...interface{}) ([]interface{}, error)
-	SelectFloat(query string, args ...interface{}) (float64, error)
-	SelectInt(query string, args ...interface{}) (int64, error)
-	SelectNullFloat(query string, args ...interface{}) (sql.NullFloat64, error)
-	SelectNullInt(query string, args ...interface{}) (sql.NullInt64, error)
-	SelectNullStr(query string, args ...interface{}) (sql.NullString, error)
-	SelectOne(holder interface{}, query string, args ...interface{}) error
-	SelectStr(query string, args ...interface{}) (string, error)
 	Prepare(query string) (*sql.Stmt, error)
 	TraceOn(prefix string, logger Logger)
 	TraceOff()
@@ -31,4 +22,4 @@ type Stmt interface {
 	QueryRow(...interface{}) *sql.Row
 }
 
-type EngineCreator func(driverName string, dsn string) (ORM, error)
+type Connector func(driverName string, dsn string) (ORM, error)

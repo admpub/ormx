@@ -25,7 +25,7 @@ type Balancer struct {
 // NewBalancer opens a connection to each physical db.
 // dataSourceNames must be a semi-comma separated list of DSNs with the first
 // one being used as the master and the rest as replicas.
-func NewBalancer(newEngine orm.EngineCreator, driverName, sources string) (*Balancer, error) {
+func NewBalancer(newEngine orm.Connector, driverName, sources string) (*Balancer, error) {
 	conns := strings.Split(sources, ";")
 	if len(conns) == 0 {
 		return nil, errors.New("empty servers list")
