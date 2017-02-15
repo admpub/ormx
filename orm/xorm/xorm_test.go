@@ -26,4 +26,9 @@ func TestQuery(t *testing.T) {
 	fmt.Println(`affected:`, affected)
 	views = db.Replica().GetOne(`SELECT views FROM webx_post WHERE id=1`)
 	fmt.Println(`views:`, views)
+
+	row := db.Replica().GetRow(`SELECT views,uid FROM webx_post WHERE id=1`)
+	if row != nil {
+		fmt.Println(`views(int64):`, row.GetInt64(0))
+	}
 }
