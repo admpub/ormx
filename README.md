@@ -67,10 +67,7 @@ Use .MasterCanRead(true) to perform WRITE queries with the master and READ queri
         // Master is used for write and read queries
         b.MasterCanRead(true)
 		
-		count, err := b.GetOne("SELECT COUNT(*) FROM mytable")
-		if err != nil{
-			panic(err)
-		}
+		count := b.GetOne("SELECT COUNT(*) FROM mytable")
 		fmt.Println(count)
 		
 	}

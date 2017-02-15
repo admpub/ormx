@@ -10,10 +10,13 @@ import (
 
 func New(driverName string, dialect gorp.Dialect, sources string) (*Balancer, error) {
 	b, e := ormx.NewBalancer(Connect(dialect), driverName, sources)
+	if e != nil {
+		return nil, e
+	}
 	return &Balancer{
 		Gorp:     b.ORM.(*Gorp),
 		Balancer: b,
-	}, e
+	}, nil
 }
 
 func Connect(dialect gorp.Dialect) orm.Connector {

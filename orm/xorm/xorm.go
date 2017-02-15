@@ -2,6 +2,9 @@ package xorm
 
 import (
 	"database/sql"
+	"io"
+
+	"os"
 
 	"github.com/admpub/ormx"
 	"github.com/admpub/ormx/orm"
@@ -11,10 +14,13 @@ import (
 
 func New(driverName string, sources string) (*Balancer, error) {
 	b, e := ormx.NewBalancer(Connect(), driverName, sources)
+	if e != nil {
+		return nil, e
+	}
 	return &Balancer{
 		Xorm:     b.ORM.(*Xorm),
 		Balancer: b,
-	}, e
+	}, nil
 }
 
 func Connect() orm.Connector {
@@ -35,7 +41,11 @@ type Xorm struct {
 }
 
 func (x *Xorm) TraceOn(prefix string, logger orm.Logger) {
-	x.SetLogger(logger.(core.ILogger))
+	if v, y := logger.(io.Writer); y {
+		x.SetLogger(xorm.NewSimpleLogger2(v, prefix, xorm.DEFAULT_LOG_FLAG))
+		return
+	}
+	x.SetLogger(xorm.NewSimpleLogger2(os.Stdout, prefix, xorm.DEFAULT_LOG_FLAG))
 }
 
 func (x *Xorm) DB() *sql.DB {
@@ -82,9 +92,7 @@ func (b *Balancer) RawQueryCallback(callback func(*core.Rows, []string), sql str
 	return b.Replica().RawQueryCallback(callback, sql, args...)
 }
 
-/**
- * 查询键值对
- */
+// RawQueryKv 查询键值对
 func (b *Balancer) RawQueryKv(key string, val string, sql string, args ...interface{}) map[string]string {
 	return b.Replica().RawQueryKv(key, val, sql, args...)
 }
@@ -108,6 +116,7 @@ func (b *Balancer) GetOne(sql string, params ...interface{}) string {
 	return b.Replica().GetOne(sql, params...)
 }
 
+// RawSelect .
 // RawSelect("*","member","id=?",1)
 // RawSelect("*","member","status=? AND sex=?",1,1)
 // RawSelect("*","`~member` a,`~order` b","a.status=? AND b.status=?",1,1)
@@ -126,16 +135,12 @@ func (b *Balancer) RawFetch(fields string, table string, where string, params ..
 	return b.Replica().RawFetch(fields, table, where, params...)
 }
 
-/**
- * 查询基于指定字段值为键名的map
- */
+// RawQueryKvs 查询基于指定字段值为键名的map
 func (b *Balancer) RawQueryKvs(key string, sql string, args ...interface{}) map[string]map[string]string {
 	return b.Replica().RawQueryKvs(key, sql, args...)
 }
 
-/**
- * RawQueryStr 查询[]map[string]string
- */
+// RawQueryStr 查询[]map[string]string
 func (b *Balancer) RawQueryStr(sql string, args ...interface{}) []map[string]string {
 	return b.Replica().RawQueryStr(sql, args...)
 }
