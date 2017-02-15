@@ -74,11 +74,11 @@ func (b *Balancer) QueryRaw(sql string, args ...interface{}) []map[string]interf
 // =======================
 // 原生SQL查询
 // =======================
-func (b *Balancer) RawQuery(sql string, args ...interface{}) (resultsSlice []*xorm.ResultSet, err error) {
+func (b *Balancer) RawQuery(sql string, args ...interface{}) ([]*xorm.ResultSet, error) {
 	return b.Replica().RawQuery(sql, args...)
 }
 
-func (b *Balancer) RawQueryCallback(callback func(*core.Rows, []string), sql string, args ...interface{}) (err error) {
+func (b *Balancer) RawQueryCallback(callback func(*core.Rows, []string), sql string, args ...interface{}) error {
 	return b.Replica().RawQueryCallback(callback, sql, args...)
 }
 
@@ -122,7 +122,7 @@ func (b *Balancer) RawFetchAll(fields string, table string, where string, params
 	return b.Replica().RawFetchAll(fields, table, where, params...)
 }
 
-func (b *Balancer) RawFetch(fields string, table string, where string, params ...interface{}) (result map[string]string) {
+func (b *Balancer) RawFetch(fields string, table string, where string, params ...interface{}) map[string]string {
 	return b.Replica().RawFetch(fields, table, where, params...)
 }
 
