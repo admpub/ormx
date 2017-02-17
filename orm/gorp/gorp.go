@@ -36,8 +36,8 @@ type Gorp struct {
 	*gorp.DbMap
 }
 
-func (g *Gorp) TraceOn(prefix string, logger orm.Logger) {
-	g.DbMap.TraceOn(prefix, logger)
+func (g *Gorp) TraceOn(prefix string, logger interface{}) {
+	g.DbMap.TraceOn(prefix, logger.(orm.Logger))
 }
 
 func (g *Gorp) DB() *sql.DB {

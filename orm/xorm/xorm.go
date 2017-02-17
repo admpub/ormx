@@ -4,8 +4,7 @@ import (
 	"database/sql"
 	"io"
 
-	"os"
-
+	"github.com/admpub/log"
 	"github.com/admpub/ormx"
 	"github.com/admpub/ormx/orm"
 	"github.com/coscms/xorm"
@@ -40,12 +39,12 @@ type Xorm struct {
 	*xorm.Engine
 }
 
-func (x *Xorm) TraceOn(prefix string, logger orm.Logger) {
+func (x *Xorm) TraceOn(prefix string, logger interface{}) {
 	if v, y := logger.(io.Writer); y {
 		x.SetLogger(xorm.NewSimpleLogger2(v, prefix, xorm.DEFAULT_LOG_FLAG))
 		return
 	}
-	x.SetLogger(xorm.NewSimpleLogger2(os.Stdout, prefix, xorm.DEFAULT_LOG_FLAG))
+	x.SetLogger(xorm.NewAdmpubLoggerWithPrefix(prefix, logger.(*log.Logger)))
 }
 
 func (x *Xorm) DB() *sql.DB {

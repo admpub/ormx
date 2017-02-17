@@ -5,7 +5,7 @@ import "database/sql"
 type ORM interface {
 	DB() *sql.DB
 	Prepare(query string) (*sql.Stmt, error)
-	TraceOn(prefix string, logger Logger)
+	TraceOn(prefix string, logger interface{})
 	TraceOff()
 }
 

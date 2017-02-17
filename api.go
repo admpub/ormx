@@ -2,7 +2,6 @@ package ormx
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/admpub/ormx/orm"
 )
@@ -23,11 +22,14 @@ func (b *Balancer) Prepare(query string) (orm.Stmt, error) {
 	return &stmt{bl: b, stmts: stmts}, nil
 }
 
-func (b *Balancer) TraceOn(prefix string, logger orm.Logger) {
-	for _, s := range b.replicas {
-		s.TraceOn(fmt.Sprintf("%s <slave>", prefix), logger)
+func (b *Balancer) TraceOn(prefix string, logger interface{}) {
+	if len(prefix) > 0 {
+		prefix += ` `
 	}
-	b.ORM.TraceOn(fmt.Sprintf("%s <master>", prefix), logger)
+	for _, s := range b.replicas {
+		s.TraceOn(prefix+"<slave>", logger)
+	}
+	b.ORM.TraceOn(prefix+"<master>", logger)
 }
 
 func (b *Balancer) TraceOff() {
